@@ -27,8 +27,7 @@ function App() {
             )
           }
         />
-        <Route path="/timer-data" element={<TimerData />} />{" "}
-        {/* Add the timer-data route */}
+        <Route path="/timer-data" element={<TimerData />} />
       </Routes>
     </Box>
   );

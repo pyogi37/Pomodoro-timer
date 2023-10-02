@@ -1,18 +1,26 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box, Button, Text, useToast } from "@chakra-ui/react";
+import useSound from "use-sound";
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import TimerData from "./TimerData";
 
+// Import your sound file (e.g., an MP3 file)
+import soundFile from "../sounds/buzzer.wav";
+
 function TimerPage({ timerSetup }) {
   const navigate = useNavigate();
+  const toast = useToast();
 
-  const { workDuration, restDuration, repitiotions } = timerSetup;
+  const { workDuration, restDuration, repititions } = timerSetup;
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [timerLabel, setTimerLabel] = useState("Work Time");
   const [minutes, setMinutes] = useState(workDuration);
-  const [reps, setReps] = useState(repitiotions);
+  const [reps, setReps] = useState(repititions);
   const [seconds, setSeconds] = useState(0);
-  const [timerPageBgColor, setTimerPageBgColor] = useState("tomato"); // Initial background color
+  const [timerPageBgColor, setTimerPageBgColor] = useState("purple.300"); // Initial background color
+
+  // Initialize the sound
+  const [playSound] = useSound(soundFile);
 
   useEffect(() => {
     let interval;
@@ -26,12 +34,26 @@ function TimerPage({ timerSetup }) {
             setTimerLabel("Rest Time");
             setMinutes(restDuration);
             setTimerPageBgColor("#4e97c8"); // Change background color to #4e97c8
+            playSound(); // Play the sound
+            // Display a toast
+            toast({
+              title: "Rest Time Started",
+              status: "success",
+              duration: 2000, // Display toast for 2 seconds
+            });
           } else {
             // Switch to work time and decrement reps
             setTimerLabel("Work Time");
             setMinutes(workDuration);
             setReps(reps - 1);
             setTimerPageBgColor("tomato"); // Change background color back to tomato
+            playSound(); // Play the sound
+            // Display a toast
+            toast({
+              title: "Work Time Started",
+              status: "success",
+              duration: 2000, // Display toast for 2 seconds
+            });
           }
         } else {
           // Continue counting down
@@ -49,7 +71,17 @@ function TimerPage({ timerSetup }) {
 
     // Cleanup the interval when component unmounts or when reps reach 0
     return () => clearInterval(interval);
-  }, [isTimerRunning, minutes, seconds, reps, workDuration, restDuration]);
+  }, [
+    isTimerRunning,
+    minutes,
+    seconds,
+    reps,
+    workDuration,
+    restDuration,
+    playSound,
+    timerLabel,
+    toast,
+  ]);
 
   const handlePauseResume = () => {
     setIsTimerRunning(!isTimerRunning);
@@ -62,13 +94,12 @@ function TimerPage({ timerSetup }) {
       seconds: seconds,
       reps: reps,
     };
-    localStorage.setItem("timerData", details);
-    console.log(details);
+    localStorage.setItem("timerData", JSON.stringify(details));
     setIsTimerRunning(false);
     setTimerLabel("Work Time");
     setMinutes(workDuration);
     setSeconds(0);
-
+    timerSetup = null;
     navigate("/timer-data");
   };
 

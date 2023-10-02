@@ -12,28 +12,39 @@ import {
   NumberInputField,
   NumberInputStepper,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 function TimerSetup({ startTimer }) {
+  const toast = useToast();
   const [workDuration, setWorkDuration] = useState();
   const [restDuration, setRestDuration] = useState();
-  const [repitiotions, setReps] = useState();
+  const [repititions, setReps] = useState();
 
   const handleStartTimer = () => {
-    if (workDuration == null || restDuration == null || repitiotions == null) {
-      // push notifications
-      console.log(workDuration, restDuration, repitiotions, "values null");
+    if (workDuration == null || restDuration == null || repititions == null) {
+      toast({
+        title: "Fill all Fields",
+        status: "warning",
+        duration: 2000, // Display toast for 2 seconds
+      });
+      console.log(workDuration, restDuration, repititions, "values null");
       return;
     }
+
+    const setupData = { workDuration, restDuration, repititions };
+
+    localStorage.setItem("setupData", JSON.stringify(setupData));
     // Call the startTimer function passed as a prop
-    startTimer({ workDuration, restDuration, repitiotions });
+
+    startTimer({ workDuration, restDuration, repititions });
   };
 
   return (
     <Box
       id="timerSetupContainer"
-      bg="tomato"
+      bg="purple.300"
       display="flex"
       justifyContent="center"
       alignItems="center"
@@ -43,14 +54,13 @@ function TimerSetup({ startTimer }) {
         id="timerSetupForm"
         bg="#4e97c8"
         w="50%"
-        textAlign="center"
         borderRadius="lg"
         mb="40"
         p="4"
       >
-        <FormLabel>Timer Setup</FormLabel>
-
         <VStack>
+          <FormLabel>Timer Setup</FormLabel>
+
           <NumberInput
             id="workDuration"
             step={5}
@@ -87,13 +97,13 @@ function TimerSetup({ startTimer }) {
           </NumberInput>
 
           <NumberInput
-            id="repitiotions"
+            id="repititions"
             step={1}
             min={3}
             max={7}
             bg="white"
             w="70%"
-            value={repitiotions}
+            value={repititions}
             onChange={(value) => setReps(value)}
             borderRadius="lg"
           >
