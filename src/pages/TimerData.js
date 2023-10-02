@@ -63,7 +63,7 @@ const TimerData = () => {
 
       <Button bg={"lightgray"} onClick={handleClick}>
         {" "}
-        New Timer{" "}
+        Restart Timer{" "}
       </Button>
     </Box>
   );
