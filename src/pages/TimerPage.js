@@ -1,8 +1,7 @@
 import { Box, Button, Text, useToast } from "@chakra-ui/react";
 import useSound from "use-sound";
 import React, { useState, useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import TimerData from "./TimerData";
+import { useNavigate } from "react-router-dom";
 
 // Import your sound file (e.g., an MP3 file)
 import soundFile from "../sounds/buzzer.wav";
@@ -27,6 +26,22 @@ function TimerPage({ timerSetup }) {
 
     if (isTimerRunning) {
       interval = setInterval(() => {
+        if (
+          minutes === workDuration &&
+          seconds === 0 &&
+          timerLabel === "Work Time" &&
+          reps === repititions
+        ) {
+          // Timer starts, show toast and play welcome sound
+          toast({
+            title: "Timer Started",
+            description: "Get ready to work!",
+            status: "success",
+            duration: 2000,
+          });
+          playSound(); // Play the welcome sound
+        }
+
         if (minutes === 0 && seconds === 0) {
           // Timer reached zero
           if (timerLabel === "Work Time") {
@@ -38,6 +53,7 @@ function TimerPage({ timerSetup }) {
             // Display a toast
             toast({
               title: "Rest Time Started",
+              description: "Go, get some AIR!",
               status: "success",
               duration: 2000, // Display toast for 2 seconds
             });
@@ -51,6 +67,7 @@ function TimerPage({ timerSetup }) {
             // Display a toast
             toast({
               title: "Work Time Started",
+              description: "Get back to work!",
               status: "success",
               duration: 2000, // Display toast for 2 seconds
             });
@@ -78,6 +95,7 @@ function TimerPage({ timerSetup }) {
     reps,
     workDuration,
     restDuration,
+    repititions,
     playSound,
     timerLabel,
     toast,

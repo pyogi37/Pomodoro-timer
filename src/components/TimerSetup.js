@@ -1,11 +1,8 @@
 import {
   Box,
   Button,
-  Center,
   FormControl,
   FormLabel,
-  HStack,
-  Input,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
